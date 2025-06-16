@@ -2,7 +2,7 @@
 'use server';
 
 import { onlineDB } from '@/lib/supabase/actions';
-import type { Task, CreateTaskPayload } from '@/lib/types';
+import type { Task, CreateTaskPayload } from '@/lib/types'; 
 
 // Define un tipo para el payload de actualización si es diferente de Partial<Task>
 type OnlineDBUpdatePayload = Partial<Omit<Task, 'id' | 'local_id' | 'sync_status' | 'created_at'>>;
@@ -13,11 +13,10 @@ export async function syncPendingTaskWithServer(
 ): Promise<{ success: boolean, syncedTask?: Task, error?: string }> {
   try {
     let syncedTask: Task;
-
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { local_id, sync_status, id, created_at, updated_at, ...taskRelevantData } = task;
 
     if (task.sync_status === 'pending_create' && !task.id) {
-
       const payloadForCreate: CreateTaskPayload = {
         title: taskRelevantData.title ?? null,
         description: taskRelevantData.description ?? null,
@@ -27,8 +26,9 @@ export async function syncPendingTaskWithServer(
 
       syncedTask = await onlineDB.createTask(payloadForCreate);
     } else if (task.sync_status === 'pending_update' && task.id) {
+      
       // Para update, solo envia los campos que realmente pueden cambiar.
-      // Omitir local_id, sync_status, created_at (usualmente no se actualiza), id (se usa en el WHERE).
+
       const payloadForUpdate: OnlineDBUpdatePayload = {
         title: taskRelevantData.title ?? null,
         description: taskRelevantData.description ?? null,
@@ -59,7 +59,7 @@ export async function fetchServerUpdates(
     return { tasks };
   } catch (e) {
     console.error('fetchServerUpdates error:', e);
-    const error = e instanceof Error ? e : new Error(String(e));
+    const error = e instanceof Error ? e : new Error(String(e)); // Tipar el error
     return { error: error.message };
   }
 }
