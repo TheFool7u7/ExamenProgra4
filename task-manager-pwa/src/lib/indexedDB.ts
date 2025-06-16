@@ -213,7 +213,7 @@ export const offlineDB = {
 
     // Preparar la tarea actualizada basada en la respuesta del servidor.
     // El local_id debería, en principio, ser originalLocalId, en principio pero siendo sincero no se si lo hace
-    let taskMergedWithServerData: Task = {
+    const taskMergedWithServerData: Task = {
       ...(taskThatWasSynced || {} as Partial<Task>), 
       ...serverTaskData,                              
       local_id: originalLocalId,                      
